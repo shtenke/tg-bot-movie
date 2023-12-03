@@ -51,11 +51,10 @@ Or write the title of movie and I will try to find it! 🎬 """, reply_markup=ma
 
 @bot.message_handler(commands=['random'])
 def random_movie(message):
-    random_num = randint(0,1000) 
     con = sqlite3.connect("movie_database.db")
     with con:
         cur = con.cursor()
-        cur.execute(f"select * from movies where id = {random_num}")
+        cur.execute(f"SELECT * FROM movies ORDER BY RANDOM() LIMIT 1")
         row = cur.fetchall()[0]
         cur.close()
     senf_info(bot, message, row)
