@@ -57,6 +57,40 @@ def random_movie(message):
     row = manager.get_random_movie()
     self_info(bot, message, row)
 
+
+@bot.message_handler(commands=['list'])
+def list_movie(message):
+    con = sqlite3.connect("movie_database.db")
+    with con:
+        cur = con.cursor()
+        cur.execute(f"SELECT title FROM favorite WHERE user_id = {message.chat.id}")
+        fav_list = cur.fetchall()
+        for i in fav_list:
+             bot.send_message(message.chat.id,i)
+
+@bot.message_handler(commands=['info'])
+def info(message):
+    bot.send_message(message.chat.id,"""Commands:
+    /start
+    /info
+    /random
+    /list
+    /delete (dont working)
+    """)
+
+@bot.message_handler(commands=['delete'])
+def del_movie(message):
+    con = sqlite3.connect("movie_database.db")
+    with con:
+         cur = con.cursor()
+         cur.execute(f"SELECT title FROM favorite WHERE user_id = {message.chat.id}")
+         fav_list = cur.fetchall()
+         a = message.text
+         a = a[8:]
+         if a in fav_list:
+              cur.execute(f'DELETE FROM favorite WHERE title = {a}')
+         else:
+              bot.send_message(message.chat.id,'You dont have this movie in favorites')
     
 @bot.message_handler(func=lambda message: True)
 def echo_message(message):
@@ -78,4 +112,3 @@ def echo_message(message):
 
 
 bot.infinity_polling()
-
