@@ -75,7 +75,7 @@ def info(message):
     /info
     /random
     /list
-    /delete (dont working)
+    /delete
     """)
 
 @bot.message_handler(commands=['delete'])
@@ -85,10 +85,11 @@ def del_movie(message):
          cur = con.cursor()
          cur.execute(f"SELECT title FROM favorite WHERE user_id = {message.chat.id}")
          fav_list = cur.fetchall()
-         a = message.text
-         a = a[8:]
+         a = message.text.split('/delete')[1].strip()
+         fav_list = [i[0] for i in fav_list]
          if a in fav_list:
-              cur.execute(f'DELETE FROM favorite WHERE title = {a}')
+              cur.execute(f"DELETE FROM favorite WHERE title = '{a}'")
+              bot.send_message(message.chat.id,'Delete is complete')
          else:
               bot.send_message(message.chat.id,'You dont have this movie in favorites')
     
