@@ -75,7 +75,7 @@ def info(message):
     /info
     /random
     /list
-    /delete (dont working)
+    /delete
     """)
 
 @bot.message_handler(commands=['delete'])
